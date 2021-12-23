@@ -21,6 +21,19 @@ class World {
         this.nowScene.player = this.player
     }
 
+    moveSceneTop = () => {
+        this.setNowScene(this.nowScene.neighbors.top)
+    }
+    moveSceneLeft = () => {
+        this.setNowScene(this.nowScene.neighbors.left)
+    }
+    moveSceneBottom = () => {
+        this.setNowScene(this.nowScene.neighbors.bottom)
+    }
+    moveSceneRight = () => {
+        this.setNowScene(this.nowScene.neighbors.right)
+    }
+
     update = () => {
         this.nowScene.update()
     }
@@ -46,6 +59,12 @@ class Scene {
         this.objLayers = []
         this.physLayer = new ObjLayer()
         this.player = null
+        this.neighbors = {
+            top: undefined,
+            left: undefined,
+            bottom: undefined,
+            right: undefined
+        }
 
         this.setDisplay()
 
@@ -62,6 +81,13 @@ class Scene {
         this.display.x = (CANVAS.width - this.display.w) / 2
         this.display.y = (CANVAS.height - this.display.h) / 2
         this.display.f = this.display.h / this.height
+    }
+
+    setNeighbors = (top, left, bottom, right) => {
+        if(top != null) this.neighbors.top = top
+        if(left != null) this.neighbors.left = left
+        if(bottom != null) this.neighbors.bottom = bottom
+        if(right != null) this.neighbors.right = right
     }
 
     camTranslate = (point) => addVec(smultVec(point, this.display.f), [this.display.x, this.display.y])

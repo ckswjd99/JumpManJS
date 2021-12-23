@@ -90,7 +90,6 @@ class Player {
                 if(this.jumpSpeedX === null && this.controllable) this.sx -= this.acc
             }
             if(KEYINPUTS.space) {
-                console.log(this.jumpGauge, this.jumpSpeedX)
                 if(this.jumpSpeedX === null) {
                     this.jumpSpeedX = this.sx
                     this.sx = 0
@@ -118,6 +117,23 @@ class Player {
             }
         }
         
+        // scene move check
+        if(this.y < -EPSILON) {
+            NOW_WORLD.moveSceneTop()
+            this.y = NOW_WORLD.nowScene.height - EPSILON
+        }
+        if(this.y > NOW_WORLD.nowScene.height + EPSILON) {
+            NOW_WORLD.moveSceneBottom()
+            this.y = EPSILON
+        }
+        if(this.x < -EPSILON) {
+            NOW_WORLD.moveSceneLeft()
+            this.x = NOW_WORLD.nowScene.width - this.w - EPSILON
+        }
+        if(this.x > NOW_WORLD.nowScene.width - this.w + EPSILON) {
+            NOW_WORLD.moveSceneRight()
+            this.x = EPSILON
+        }
         
         // collision check
         let dp = smultVec([this.sx, this.sy], dt)
@@ -226,7 +242,7 @@ class Player {
                     }
                     else {
                         yRectCollide = true
-                        this.y = dp[1] > 0 ? wall.y - wall.h - EPSILON : wall.y + this.h + EPSILON
+                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + this.h + EPSILON
                     }
                 }
                 else if(wall.shape.rap == RAP.RT) {
@@ -236,18 +252,17 @@ class Player {
                     }
                     else {
                         yRectCollide = true
-                        this.y = dp[1] > 0 ? wall.y - wall.h - EPSILON : wall.y + this.h + EPSILON
+                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + this.h + EPSILON
                     }
                 }
                 else if(wall.shape.rap == RAP.RB) {
-                    console.log(dp[1], wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y+nowShape.h]))
                     if(dp[1] > 0 && wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y+nowShape.h])) {
                         yRtriCollide = RAP.RB
                         this.y = Math.min(intersections[0][1], intersections[1][1]) - this.h - EPSILON
                     }
                     else {
                         yRectCollide = true
-                        this.y = dp[1] > 0 ? wall.y - wall.h - EPSILON : wall.y + this.h + EPSILON
+                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + this.h + EPSILON
                         console.log(this.y)
                     }
                 }
@@ -258,7 +273,7 @@ class Player {
                     }
                     else {
                         yRectCollide = true
-                        this.y = dp[1] > 0 ? wall.y - wall.h - EPSILON : wall.y + this.h + EPSILON
+                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + this.h + EPSILON
                     }
                 }
             }
@@ -276,18 +291,24 @@ class Player {
             this.controllable = false
         }
         if(!xRectCollide && !yRectCollide && xRtriCollide) {
-            this.sx += Math.sign(this.sx) * 1
-            this.sy += Math.sign(this.sy) * 1
-            if(xRtriCollide == RAP.LT || xRtriCollide == RAP.RB) {
+            this.sx += Math.sign(this.sx) * 0.1
+            this.sy += Math.sign(this.sy) * 0.1
+            if(xRtriCollide == RAP.LT) {
                 [this.sx, this.sy] = projectVec([1, -1], [this.sx, this.sy])
+            }
+            if(xRtriCollide == RAP.RB) {
+                [this.sx, this.sy] = projectVec([-1, 1], [this.sx, this.sy])
+            }
+            if(xRtriCollide == RAP.RT) {
+                [this.sx, this.sy] = projectVec([1, 1], [this.sx, this.sy])
             }
             if(xRtriCollide == RAP.RT || xRtriCollide == RAP.LB) {
                 [this.sx, this.sy] = projectVec([1, 1], [this.sx, this.sy])
             }
         }
         if(!xRectCollide && !yRectCollide && !xRtriCollide && yRtriCollide) {
-            this.sx += Math.sign(this.sx) * 1
-            this.sy += Math.sign(this.sy) * 1
+            this.sx += Math.sign(this.sx) * 0.1
+            this.sy += Math.sign(this.sy) * 0.1
             if(yRtriCollide == RAP.LT || yRtriCollide == RAP.RB) {
                 [this.sx, this.sy] = projectVec([1, -1], [this.sx, this.sy])
             }
