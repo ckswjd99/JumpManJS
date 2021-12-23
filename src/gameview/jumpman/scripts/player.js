@@ -19,6 +19,10 @@ const KEYINPUTS = {
     space: false
 }
 
+const PLAYER_STATE = {}
+const playerStates = ["IDLE", "WALK", "JUMPREADY", "JUMP", "FALL", "FELL"]
+playerStates.forEach(state => PLAYER_STATE[state] = state)
+
 class Player {
     constructor(x, y, w, h, imageDir) {
         // physicals
@@ -48,8 +52,9 @@ class Player {
 
         this._shape = new Rectangle(this.x, this.y, this.w, this.h)
 
-        // game logical
         this.controllable = false
+
+        this.state = PLAYER_STATE.JUMP
     }
 
     get cx() { 
@@ -74,8 +79,16 @@ class Player {
     loadImage = () => {
         this.image['idle'] = new Image()
         this.image['idle'].src = this.imageDir + "/idle.png";
+        this.image['walk'] = new Image()
+        this.image['walk'].src = this.imageDir + "/walk.png";
         this.image['jumpGather'] = new Image()
         this.image['jumpGather'].src = this.imageDir + "/jumpGather.png";
+        this.image['jump'] = new Image()
+        this.image['jump'].src = this.imageDir + "/jump.png";
+        this.image['fall'] = new Image()
+        this.image['fall'].src = this.imageDir + "/fall.png";
+        this.image['fell'] = new Image()
+        this.image['fell'].src = this.imageDir + "/fell.png";
     }
 
     update = (dt) => {
@@ -84,12 +97,21 @@ class Player {
         if(this.controllable) {
             this.sx = 0
             if(KEYINPUTS.arrowRight) {
-                if(this.jumpSpeedX === null && this.controllable) this.sx += this.acc
+                this.state = PLAYER_STATE.WALK
+                if(this.jumpSpeedX === null) this.sx += this.acc
+            }
+            else {
+                if(this.state == PLAYER_STATE.WALK) this.state = PLAYER_STATE.IDLE
             }
             if(KEYINPUTS.arrowLeft) {
-                if(this.jumpSpeedX === null && this.controllable) this.sx -= this.acc
+                this.state = PLAYER_STATE.WALK
+                if(this.jumpSpeedX === null) this.sx -= this.acc
+            }
+            else {
+                if(this.state == PLAYER_STATE.WALK) this.state = PLAYER_STATE.IDLE
             }
             if(KEYINPUTS.space) {
+                this.state = PLAYER_STATE.JUMPREADY
                 if(this.jumpSpeedX === null) {
                     this.jumpSpeedX = this.sx
                     this.sx = 0
@@ -109,6 +131,7 @@ class Player {
                 this.jumpGauge = Math.min(this.jumpGauge+this.jumpGather, this.maxJump)
             }
             else if(this.jumpGauge > 0) {
+                this.state = PLAYER_STATE.JUMP
                 this.sy = -this.jumpGauge
                 this.sx = this.jumpSpeedX
                 this.jumpGauge = 0
@@ -242,7 +265,7 @@ class Player {
                     }
                     else {
                         yRectCollide = true
-                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + this.h + EPSILON
+                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + wall.h + EPSILON
                     }
                 }
                 else if(wall.shape.rap == RAP.RT) {
@@ -252,7 +275,7 @@ class Player {
                     }
                     else {
                         yRectCollide = true
-                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + this.h + EPSILON
+                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + wall.h + EPSILON
                     }
                 }
                 else if(wall.shape.rap == RAP.RB) {
@@ -262,7 +285,7 @@ class Player {
                     }
                     else {
                         yRectCollide = true
-                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + this.h + EPSILON
+                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + wall.h + EPSILON
                         console.log(this.y)
                     }
                 }
@@ -273,16 +296,21 @@ class Player {
                     }
                     else {
                         yRectCollide = true
-                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + this.h + EPSILON
+                        this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + wall.h + EPSILON
                     }
                 }
             }
         })
 
         // speed resolve
-        if(xRectCollide) this.sx = -this.sx
+        if(xRectCollide) {
+            this.state = PLAYER_STATE.FALL
+            this.sx = -this.sx
+        }
         if(yRectCollide && dp[1] < 0) this.sy = -this.sy
         if(yRectCollide && dp[1] >= 0) {
+            if(this.state == PLAYER_STATE.FALL) this.state = PLAYER_STATE.FELL
+            else if(this.state != PLAYER_STATE.FELL && this.jumpSpeedX === null) this.state = PLAYER_STATE.IDLE
             this.sy = 0
             this.sx = 0
             this.controllable = true
@@ -291,6 +319,7 @@ class Player {
             this.controllable = false
         }
         if(!xRectCollide && !yRectCollide && xRtriCollide) {
+            this.state = PLAYER_STATE.FALL
             this.sx += Math.sign(this.sx) * 0.1
             this.sy += Math.sign(this.sy) * 0.1
             if(xRtriCollide == RAP.LT) {
@@ -307,6 +336,7 @@ class Player {
             }
         }
         if(!xRectCollide && !yRectCollide && !xRtriCollide && yRtriCollide) {
+            this.state = PLAYER_STATE.FALL
             this.sx += Math.sign(this.sx) * 0.1
             this.sy += Math.sign(this.sy) * 0.1
             if(yRtriCollide == RAP.LT || yRtriCollide == RAP.RB) {
@@ -333,11 +363,16 @@ class Player {
     }
     
     render = (cam) => {
+        console.log(this.state)
         const [tx, ty] = roundVec(cam([this.x, this.y]))
         const [tw, th] = subVec(roundVec(cam([this.w, this.h])), cam([0, 0]))
 
-        if(this.jumpSpeedX !== null) CTX.drawImage(this.image.jumpGather, tx, ty, tw, th)
-        else CTX.drawImage(this.image.idle, tx, ty, tw, th)
+        if(this.state == PLAYER_STATE.IDLE) CTX.drawImage(this.image.idle, tx, ty, tw, th)
+        if(this.state == PLAYER_STATE.WALK) CTX.drawImage(this.image.walk, tx, ty, tw, th)
+        if(this.state == PLAYER_STATE.JUMPREADY) CTX.drawImage(this.image.jumpGather, tx, ty, tw, th)
+        if(this.state == PLAYER_STATE.JUMP) CTX.drawImage(this.image.jump, tx, ty, tw, th)
+        if(this.state == PLAYER_STATE.FALL) CTX.drawImage(this.image.fall, tx, ty, tw, th)
+        if(this.state == PLAYER_STATE.FELL) CTX.drawImage(this.image.fell, tx, ty, tw, th)
     }
 }
 

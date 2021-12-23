@@ -3,7 +3,7 @@ console.log("LOAD SCRIPT: physics.js")
 
 // vector calculation
 
-const EPSILON = 0.001
+const EPSILON = 0.01
 const roundVec = (vec) => [Math.round(vec[0]), Math.round(vec[1])]
 const normVec = (vec) => Math.sqrt(vec[0]**2 + vec[1]**2)
 const smultVec = (vec, scala) => [vec[0]*scala, vec[1]*scala]

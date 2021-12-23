@@ -24,7 +24,7 @@ const DEBUG_PHYSI_OBJS = [
     new PhysicalObject(16*GRID, 18*GRID, 4*GRID, 2*GRID, new Rectangle()),
     new PhysicalObject(20*GRID, 18*GRID, 2*GRID, 2*GRID, new RightTriangle(null, null, null, null, RAP.LB)),
     new PhysicalObject(14*GRID, 18*GRID, 2*GRID, 2*GRID, new RightTriangle(null, null, null, null, RAP.RB)),
-    new PhysicalObject(4*GRID, 14*GRID, 2*GRID, 2*GRID, new Rectangle()),
+    new PhysicalObject(4*GRID, 14*GRID, 2*GRID, 2*GRID, new RightTriangle(null, null, null, null, RAP.RB)),
     new PhysicalObject(6*GRID, 14*GRID, 2*GRID, 2*GRID, new RightTriangle(null, null, null, null, RAP.LB)),
     new PhysicalObject(6*GRID, 6*GRID, 2*GRID, 2*GRID, new Rectangle()),
     new PhysicalObject(22*GRID, -2*GRID, 18*GRID, 4*GRID, new Rectangle()),
@@ -58,14 +58,14 @@ DEBUG_SCENE2.physLayer.append(...DEBUG_PHYSI_OBJS2)
 DEBUG_SCENE2.append(DEBUG_LAYER2)
 
 const DEBUG_SCENE3 = new Scene(40, 40, [0, 0.4])
-DEBUG_SCENE3.setNeighbors(null, '0-0', null, null)
+DEBUG_SCENE3.setNeighbors(null, '0-0', null, '0-1')
 DEBUG_WORLD.addScene('0-1', DEBUG_SCENE3)
 
 const DEBUG_LAYER3 = new ObjLayer()
 const DEBUG_IMAGE_OBJ3 = new ImageObject(0, 0, 40*GRID, 40*GRID, 'jumpman/images/sampleImage.jpg')
 const DEBUG_PHYSI_OBJS3 = [
     new PhysicalObject(0*GRID, 30*GRID, 2*GRID, 10*GRID, new Rectangle()),
-    new PhysicalObject(38*GRID, 0*GRID, 2*GRID, 38*GRID, new Rectangle()),
+    new PhysicalObject(38*GRID, 30*GRID, 2*GRID, 10*GRID, new Rectangle()),
     new PhysicalObject(0*GRID, 38*GRID, 40*GRID, 2*GRID, new Rectangle()),
     
 ]

@@ -131,7 +131,7 @@ class ObjLayer {
 
 
 const GOBJTYPE = new Object()
-const gobjNames = ["IMAGE", "PHYSICAL"]
+const gobjNames = ["IMAGE", "PHYSICAL", "TRIGGER"]
 gobjNames.forEach(gobjName => GOBJTYPE[gobjName] = gobjName)
 
 class GameObject {
@@ -187,6 +187,25 @@ class PhysicalObject extends GameObject {
         this.shape.setParams(this.x, this.y, this.w, this.h)
     }
     render = (cam) => { if(SETTING.debugging) this.shape.debugRender(cam) }
+}
+
+class TriggerObject extends GameObject {
+    constructor(x, y, w, h, callback) {
+        super()
+        this.type = GOBJTYPE.TRIGGER
+        this.x = x
+        this.y = y
+        this.w = w
+        this.h = h
+        this.shape = new Rectangle(x, y, w, h)
+        this.callback = callback
+    }
+
+    update = (dt) => {
+        const playerShape = NOW_WORLD.player.shape
+        const {intersections} = Shape.polyCollide(this.shape, playerShape)
+        if(intersections.length !== 0) this.callback()
+    }
 }
 
 // sequential importer
