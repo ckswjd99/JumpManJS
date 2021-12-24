@@ -34,9 +34,6 @@ class Player {
         this.image = {}
         this.loadImage()
 
-        this._cx = this.x+w/2
-        this._cy = this.y+h/2
-
         this.acc = 15
         this.maxSpeed = 65
         
@@ -57,23 +54,12 @@ class Player {
         this.state = PLAYER_STATE.JUMP
     }
 
-    get cx() { 
-        this._cx = x+w/2 
-        return this._cx
-    }
-    get cy() { 
-        this._cy = y+h/2 
-        return this._cy
-    }
-    
     get shape() {
         this._shape.x = this.x
         this._shape.y = this.y
         return this._shape
     }
     
-    set cx(val) { this._cx = val }
-    set cy(val) { this._cy = val }
     set shape(val) { this._shape = val }
 
     loadImage = () => {
@@ -363,7 +349,6 @@ class Player {
     }
     
     render = (cam) => {
-        console.log(this.state)
         const [tx, ty] = roundVec(cam([this.x, this.y]))
         const [tw, th] = subVec(roundVec(cam([this.w, this.h])), cam([0, 0]))
 

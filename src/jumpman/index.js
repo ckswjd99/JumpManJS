@@ -16,7 +16,8 @@ const scriptsToLoad = [
     "jumpman/scripts/physics.js",
     "jumpman/scripts/world.js",
     "jumpman/scripts/player.js",
-    "jumpman/scripts/debug.js"
+    "jumpman/scripts/maps.js",
+    "jumpman/scripts/loader.js",
 ]
 
 let loadIndex = 0

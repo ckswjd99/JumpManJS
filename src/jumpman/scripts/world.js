@@ -3,20 +3,16 @@ console.log("LOAD SCRIPT: world.js")
 let NOW_WORLD = null
 
 class World {
-    constructor(name, startingScene, player) {
+    constructor(name, player) {
         this.name = name
-        this.scenes = {
-            'startingScene': startingScene
-        }
-
-        this.nowScene = startingScene
+        this.scenes = { }
+        this.nowScene = null
         this.player = player
-        
-        this.setNowScene('startingScene')
     }
 
     addScene = (sceneName, scene) => this.scenes[sceneName] = scene
     setNowScene = (sceneName) => {
+        if(!(sceneName in this.scenes)) return
         this.nowScene = this.scenes[sceneName]
         this.nowScene.player = this.player
     }
@@ -34,8 +30,12 @@ class World {
         this.setNowScene(this.nowScene.neighbors.right)
     }
 
+    latestUpdate = 0
     update = () => {
+        const now = new Date()
+        console.log("time spent: ", now - this.latestUpdate)
         this.nowScene.update()
+        this.latestUpdate = now
     }
     render = () => {
         this.nowScene.render()
@@ -44,11 +44,11 @@ class World {
 }
 
 class Scene {
-    constructor(col, row, gravity=[0, 0.1], maxSlideSpeed=20) {
+    constructor(col, row, gravity=[0, 0.1]) {
         this.col = col
         this.row = row
-        this.width = col * SETTING.grid
-        this.height = row * SETTING.grid
+        this.width = col * GRID
+        this.height = row * GRID
         this.display = {
             x: 0,
             y: 0,
@@ -70,7 +70,6 @@ class Scene {
 
         // physical
         this.gravity = gravity
-        this.maxSlideSpeed = maxSlideSpeed
     }
 
     setDisplay = () => {
@@ -84,10 +83,10 @@ class Scene {
     }
 
     setNeighbors = (top, left, bottom, right) => {
-        if(top != null) this.neighbors.top = top
-        if(left != null) this.neighbors.left = left
-        if(bottom != null) this.neighbors.bottom = bottom
-        if(right != null) this.neighbors.right = right
+        if(top !== null && top !== 0) this.neighbors.top = top
+        if(left !== null && left !== 0) this.neighbors.left = left
+        if(bottom !== null && bottom !== 0) this.neighbors.bottom = bottom
+        if(right !== null && right !== 0) this.neighbors.right = right
     }
 
     camTranslate = (point) => addVec(smultVec(point, this.display.f), [this.display.x, this.display.y])
@@ -103,22 +102,32 @@ class Scene {
     }
     render = () => {
         // initialize display
-        CTX.fillStyle = SETTING.letterbox
-        CTX.fillRect(0, 0, CANVAS.width, CANVAS.height)
         CTX.fillStyle = "rgb(255, 255, 255)"
         CTX.fillRect(this.display.x, this.display.y, this.display.w, this.display.h)
 
-        // render layers
-        this.objLayers.forEach(layer => layer.render(this.camTranslate))
+        // render layers: player is rendered after rendering 2nd layer
+        let renderedLayers = 0
+        this.objLayers.forEach(layer => {
+            layer.render(this.camTranslate)
+            renderedLayers++
+            if(renderedLayers == 2) this.player.render(this.camTranslate)
+        })
         if(SETTING.debugging) this.physLayer.render(this.camTranslate)
-        this.player.render(this.camTranslate)
+        if(renderedLayers < 2) this.player.render(this.camTranslate)
+
+        // letterbox
+        CTX.fillStyle = SETTING.letterbox
+        CTX.fillRect(0, 0, (CANVAS.width - this.display.w)/2, CANVAS.height)
+        CTX.fillRect((CANVAS.width + this.display.w)/2, 0, (CANVAS.width - this.display.w)/2, CANVAS.height)
+        CTX.fillRect(0, 0, CANVAS.width, (CANVAS.height - this.display.h)/2)
+        CTX.fillRect(0, (CANVAS.height + this.display.h)/2, CANVAS.width, (CANVAS.height - this.display.h)/2)
     }
 
 }
 
 class ObjLayer {
     constructor() {
-        this.objects = []
+        this.objects = [...arguments]
     }
 
     append() {

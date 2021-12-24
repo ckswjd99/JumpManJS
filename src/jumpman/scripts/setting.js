@@ -8,7 +8,7 @@ const SETTING = {
     grid: 5
 }
 
-const GRID = SETTING.grid
+let GRID = SETTING.grid
 
 // sequential importer
 loadScriptFile(scriptsToLoad[++loadIndex])

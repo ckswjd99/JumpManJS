@@ -49,7 +49,6 @@ const DEBUG_PHYSI_OBJS2 = [
     new PhysicalObject(4*GRID, 36*GRID, 4*GRID, 4*GRID, new RightTriangle(null, null, null, null, RAP.LT)),
     new PhysicalObject(22*GRID, 38*GRID, 18*GRID, 2*GRID, new Rectangle()),
     new PhysicalObject(18*GRID, 38*GRID, 4*GRID, 4*GRID, new RightTriangle(null, null, null, null, RAP.RB)),
-
     new PhysicalObject(34*GRID, 30*GRID, 4*GRID, 4*GRID, new RightTriangle(null, null, null, null, RAP.RB)),
 ]
 
