@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link href="mapmaker.css" rel="stylesheet"></link>
+</head>
+<body>
+    <div id="wrapper">
+        <div id="center_area">
+            <div id="scene_header">
+                <h1 style="padding-right: 50px;">Now Editing Scene: </h1><input type="text">
+            </div>
+            <div id="scene_params">
+                <div class="param_box"><h3>Row</h3><input type="number"></div>
+                <div class="param_box"><h3>Col</h3><input type="number"></div>
+                <div class="param_box"><h3>Grid</h3><input type="number"></div>
+                <div class="param_box"><h3>Top</h3><input type="text"></div>
+                <div class="param_box"><h3>Left</h3><input type="text"></div>
+                <div class="param_box"><h3>Bottom</h3><input type="text"></div>
+                <div class="param_box"><h3>Right</h3><input type="text"></div>
+                <div class="param_box"><h3>GravX</h3><input type="number"></div>
+                <div class="param_box"><h3>GravY</h3><input type="number"></div>
+            </div>
+            <div id="scene_plate">
+                <canvas id="scene_gui"></canvas>
+            </div>
+            <div id="scene_button">
+                <button>Save</button>
+            </div>
+        </div>
+    </div>
+    <div id="floating_window">
+        <div id="move_tag"><div id="move_bar" style="padding: 0;"></div></div>
+        <div><h2>JumpMan Map Maker</h2></div>
+        <div><h3>World Name</h3><input type="text"></div>
+        <div>
+            <h3>Scene List</h3>
+            <ul id="scene_list">
+                <li><div><p style="padding-right: 20px;">temp</p><button>Load</button></div></li>
+            </ul>
+        </div>
+        <div>
+            <h3>Player Params</h3>
+            <div id="player_params">
+                <div class="player_param_list"><p style="padding-right: 20px;">x</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">y</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">w</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">h</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">acc</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">maxSpeed</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">maxJump</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">jumpGather</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">maxAcc</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">jumpSpeedXGather</p><input type="number"></div>
+                <div class="player_param_list"><p style="padding-right: 20px;">imageDir</p><input type="text"></div>
+            </div>
+        </div>
+        <div>
+            <h3>Save & Load</h3>
+            <div>
+                <button>Save World</button>
+                <button>Load World</button>
+            </div>
+        </div>
+    </div>
+    <script src="mapmakerUI.js" type="text/javascript"></script>
+    <script src="mapmakerLogic.js" type="text/javascript"></script>
+</body>
+</html>

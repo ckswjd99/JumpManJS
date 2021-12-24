@@ -1,0 +1,117 @@
+body { margin: 0; padding: 0; background-color: rgb(59, 59, 59); color: white;}
+h1, h2, h3 { color: white; margin: 0; padding: 0; margin-bottom: 5px; }
+p { margin: 0; padding: 0; }
+div { box-sizing: border-box;}
+input { background-color: rgb(70, 70, 70); border: 2px solid rgb(100, 100, 100); color: white; padding: 3px; }
+
+#wrapper {
+    width: 100vw;
+    height: 100vh;
+}
+#floating_window {
+    position: absolute;
+    top: 30px;
+    left: 30px;
+
+    width: 300px;
+    height: fit-content;
+    resize: both;
+    box-sizing: border-box;
+
+    padding: 10px 15px 10px 15px;
+
+    background-color: rgba(100, 100, 100, 0.5);
+    border: 2px solid rgb(100, 100, 100);
+}
+#floating_window div {
+    padding-bottom: 10px;
+}
+#move_tag {
+    cursor: move;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+#move_bar {
+    width: 40%;
+    max-width: 100px;
+    height: 4px;
+
+    background-color: rgb(100, 100, 100);
+    border-radius: 5px;
+}
+#scene_list {
+    list-style: circle;
+    margin-top: 10px;
+}
+#scene_list div {
+    display: flex;
+    justify-content: start;
+    padding-bottom: 5px;
+}
+#player_params {
+    display: flex;
+    justify-content: start;
+    flex-wrap: wrap;
+    width: 100%;
+}
+.player_param_list {
+    display: flex;
+    padding-left: 15px;
+    width: fit-content;
+    margin: 0;
+}
+.player_param_list input {
+    width: 50px;
+}
+
+#center_area {
+    width: 70%;
+    max-width: 720px;
+    min-width: 640px;
+    height: 100%;
+
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#scene_header {
+    padding-top: 20px;
+    padding-bottom: 20px;
+
+    display: flex;
+    justify-content: space-between;
+}
+#scene_header input {
+    width: 350px;
+    font-size: 30px;
+}
+
+#scene_params {
+    display: flex;
+    justify-content: space-between;
+    padding-bottom: 20px;
+}
+#scene_params input { width: 50px; }
+
+#scene_plate {
+    background-color: white;
+    margin-left: auto;
+    margin-right: auto;
+
+    width: 100%;
+    padding-bottom: 100%;
+
+    position: relative;
+}
+#scene_gui {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+#scene_button {
+    padding-top: 10px;
+}
