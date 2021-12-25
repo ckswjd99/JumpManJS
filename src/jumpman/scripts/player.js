@@ -150,8 +150,8 @@ class Player {
         
         // x axis check
         this.x += dp[0]
-        let xRectCollide = false
-        let xRtriCollide = false
+        let xRectCollide = null
+        let xRtriCollide = null
 
         // check rect collide then resolve
         walls.forEach(wall => {
@@ -161,7 +161,7 @@ class Player {
 
             if(wall.shape.type == SHAPETYPE.RECT) {
                 xRectCollide = true
-                this.x = dp[0] > 0 ? wall.x - this.w - EPSILON : wall.x + wall.w + EPSILON
+                this.x = dp[0] > 0 ? wall.shape.x - this.w - EPSILON : wall.shape.x + wall.shape.w + EPSILON
             }
         })
 
@@ -175,7 +175,7 @@ class Player {
 
             if(wall.shape.type == SHAPETYPE.RTRI) {
                 if(wall.shape.rap == RAP.LT) {
-                    if(dp[0] < 0 && wall.shape.pointInside([nowShape.x, nowShape.y])) {
+                    if(dp[0] < 0 && (wall.shape.pointInside([nowShape.x, nowShape.y]) || nowShape.pointInside([wall.shape.x, wall.shape.y+wall.shape.h]))) {
                         xRtriCollide = RAP.LT
                         this.x = Math.max(intersections[0][0], intersections[1][0]) + EPSILON
                     }
@@ -185,7 +185,7 @@ class Player {
                     }
                 }
                 else if(wall.shape.rap == RAP.RT) {
-                    if(dp[0] > 0 && wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y])) {
+                    if(dp[0] > 0 && (wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y]) || nowShape.pointInside([wall.shape.x+wall.shape.w, wall.shape.y+wall.shape.h]))) {
                         xRtriCollide = RAP.RT
                         this.x = Math.min(intersections[0][0], intersections[1][0]) - this.w - EPSILON
                     }
@@ -195,9 +195,10 @@ class Player {
                     }
                 }
                 else if(wall.shape.rap == RAP.RB) {
-                    if(dp[0] > 0 && wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y+nowShape.h])) {
+                    if(dp[0] > 0 && (wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y+nowShape.h]) || nowShape.pointInside([wall.shape.x+wall.shape.w, wall.shape.y]))) {
                         xRtriCollide = RAP.RB
                         this.x = Math.min(intersections[0][0], intersections[1][0]) - this.w - EPSILON
+                        // console.log(Math.min(intersections[0][0], intersections[1][0]) - this.w - EPSILON, this.y)
                     }
                     else {
                         xRectCollide = true
@@ -205,8 +206,8 @@ class Player {
                     }
                 }
                 else if(wall.shape.rap == RAP.LB) {
-                    if(dp[0] < 0 && wall.shape.pointInside([nowShape.x, nowShape.y+nowShape.w])) {
-                        xRtriCollide = RAP.LT
+                    if(dp[0] < 0 && (wall.shape.pointInside([nowShape.x, nowShape.y+nowShape.w]) || nowShape.pointInside([wall.shape.x, wall.shape.y]))) {
+                        xRtriCollide = RAP.LB
                         this.x = Math.max(intersections[0][0], intersections[1][0]) + EPSILON
                     }
                     else {
@@ -220,8 +221,8 @@ class Player {
 
         // y axis check
         this.y += dp[1]
-        let yRectCollide = false
-        let yRtriCollide = false
+        let yRectCollide = null
+        let yRtriCollide = null
 
         // check rect collide
         walls.forEach(wall => {
@@ -231,21 +232,21 @@ class Player {
 
             if(wall.shape.type == SHAPETYPE.RECT) {
                 yRectCollide = true
-                this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + wall.h + EPSILON
+                this.y = dp[1] > 0 ? wall.shape.y - this.h - EPSILON : wall.shape.y + wall.shape.h + EPSILON
             }
         })
 
         // check rtri collide
         walls.forEach(wall => {
             if(yRectCollide) return
-
+            
             const nowShape = this.shape
             const intersections = Shape.polyCollide(nowShape, wall.shape)
             if(intersections.length == 0) return
 
             if(wall.shape.type == SHAPETYPE.RTRI) {
                 if(wall.shape.rap == RAP.LT) {
-                    if(dp[1] < 0 && wall.shape.pointInside([nowShape.x, nowShape.y])) {
+                    if(dp[1] < 0 && (wall.shape.pointInside([nowShape.x, nowShape.y]) || nowShape.pointInside([wall.shape.x+wall.shape.w, wall.shape.y]))) {
                         yRtriCollide = RAP.LT
                         this.y = Math.max(intersections[0][1], intersections[1][1]) + EPSILON
                     }
@@ -255,7 +256,7 @@ class Player {
                     }
                 }
                 else if(wall.shape.rap == RAP.RT) {
-                    if(dp[1] < 0 && wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y])) {
+                    if(dp[1] < 0 && (wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y] || nowShape.pointInside([wall.shape.x, wall.shape.y])))) {
                         yRtriCollide = RAP.RT
                         this.y = Math.max(intersections[0][1], intersections[1][1]) + EPSILON
                     }
@@ -265,18 +266,17 @@ class Player {
                     }
                 }
                 else if(wall.shape.rap == RAP.RB) {
-                    if(dp[1] > 0 && wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y+nowShape.h])) {
+                    if(dp[1] > 0 && (wall.shape.pointInside([nowShape.x+nowShape.w, nowShape.y+nowShape.h]) || nowShape.pointInside([wall.shape.x, wall.shape.y+wall.shape.h]))) {
                         yRtriCollide = RAP.RB
                         this.y = Math.min(intersections[0][1], intersections[1][1]) - this.h - EPSILON
                     }
                     else {
                         yRectCollide = true
                         this.y = dp[1] > 0 ? wall.y - this.h - EPSILON : wall.y + wall.h + EPSILON
-                        console.log(this.y)
                     }
                 }
                 else if(wall.shape.rap == RAP.LB) {
-                    if(dp[1] > 0 && wall.shape.pointInside([nowShape.x, nowShape.y+nowShape.w])) {
+                    if(dp[1] > 0 && (wall.shape.pointInside([nowShape.x, nowShape.y+nowShape.w]) || nowShape.pointInside([wall.shape.x+wall.shape.w, wall.shape.y+wall.shape.h]))) {
                         yRtriCollide = RAP.LB
                         this.y = Math.min(intersections[0][1], intersections[1][1]) - this.h - EPSILON
                     }
@@ -304,47 +304,64 @@ class Player {
         else {
             this.controllable = false
         }
-        if(!xRectCollide && !yRectCollide && xRtriCollide) {
+        if(!xRectCollide && !yRectCollide && xRtriCollide !== null) {
             this.state = PLAYER_STATE.FALL
-            this.sx += Math.sign(this.sx) * 0.1
-            this.sy += Math.sign(this.sy) * 0.1
+            this.sy += 1
             if(xRtriCollide == RAP.LT) {
-                [this.sx, this.sy] = projectVec([1, -1], [this.sx, this.sy])
-            }
-            if(xRtriCollide == RAP.RB) {
-                [this.sx, this.sy] = projectVec([-1, 1], [this.sx, this.sy])
+                const newSpeed = projectVec([1, -1], [this.sx, this.sy])
+                this.sx = newSpeed[0]
+                this.sy = newSpeed[1]
             }
             if(xRtriCollide == RAP.RT) {
-                [this.sx, this.sy] = projectVec([1, 1], [this.sx, this.sy])
+                const newSpeed = projectVec([-1, -1], [this.sx, this.sy])
+                this.sx = newSpeed[0]
+                this.sy = newSpeed[1]
             }
-            if(xRtriCollide == RAP.RT || xRtriCollide == RAP.LB) {
-                [this.sx, this.sy] = projectVec([1, 1], [this.sx, this.sy])
+            if(xRtriCollide == RAP.RB) {
+                const newSpeed = projectVec([1, -1], [this.sx, this.sy])
+                this.sx = newSpeed[0]
+                this.sy = newSpeed[1]
+            }
+            if(xRtriCollide == RAP.LB) {
+                const newSpeed = projectVec([-1, -1], [this.sx, this.sy])
+                this.sx = newSpeed[0]
+                this.sy = newSpeed[1]
             }
         }
-        if(!xRectCollide && !yRectCollide && !xRtriCollide && yRtriCollide) {
+        if(!xRectCollide && !yRectCollide && xRtriCollide === null && yRtriCollide !== null) {
             this.state = PLAYER_STATE.FALL
-            this.sx += Math.sign(this.sx) * 0.1
-            this.sy += Math.sign(this.sy) * 0.1
-            if(yRtriCollide == RAP.LT || yRtriCollide == RAP.RB) {
-                [this.sx, this.sy] = projectVec([1, -1], [this.sx, this.sy])
+            this.sy += 1
+            if(yRtriCollide == RAP.LT) {
+                const newSpeed = projectVec([1, -1], [this.sx, this.sy])
+                this.sx = newSpeed[0]
+                this.sy = newSpeed[1]
             }
-            if(yRtriCollide == RAP.RT || yRtriCollide == RAP.LB) {
-                [this.sx, this.sy] = projectVec([1, 1], [this.sx, this.sy])
+            if(yRtriCollide == RAP.RT) {
+                const newSpeed = projectVec([-1, -1], [this.sx, this.sy])
+                this.sx = newSpeed[0]
+                this.sy = newSpeed[1]
+            }
+            if(yRtriCollide == RAP.RB) {
+                const newSpeed = projectVec([1, -1], [this.sx, this.sy])
+                this.sx = newSpeed[0]
+                this.sy = newSpeed[1]
+            }
+            if(yRtriCollide == RAP.LB) {
+                const newSpeed = projectVec([-1, -1], [this.sx, this.sy])
+                this.sx = newSpeed[0]
+                this.sy = newSpeed[1]
             }
         }
 
         // gravity
-        [this.sx, this.sy] = addVec([this.sx, this.sy], NOW_WORLD.nowScene.gravity)
+        const afterGravity = addVec([this.sx, this.sy], NOW_WORLD.nowScene.gravity)
+        this.sx = afterGravity[0]
+        this.sy = afterGravity[1]
         
         // speed limit
         if(Math.abs(this.sx) > this.maxSpeed) {
             [this.sx, this.sy] = smultVec([this.sx, this.sy], this.maxSpeed / normVec([this.sx, this.sy]))
         }
-
-        
-        
-
-        
         
     }
     

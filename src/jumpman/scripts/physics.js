@@ -76,7 +76,7 @@ class Shape {
                 const intersectPoints = []
                 if(
                     (line2[0][0] - line1[0][0])*(line2[1][0] - line1[0][0]) <= 0
-                    && (line2[0][1] - line1[0][1])*(line2[1][1] = line1[0][1]) <= 0
+                    && (line2[0][1] - line1[0][1])*(line2[1][1] - line1[0][1]) <= 0
                 ) intersectPoints.push(line1[0])
                 if(
                     (line2[0][0] - line1[1][0])*(line2[1][0] - line1[1][0]) <= 0
@@ -100,7 +100,7 @@ class Shape {
         } else {    // not paralell
             lambda = ((s - q) * (r - a) + (p - r) * (s - b)) / det
             gamma = ((b - d) * (r - a) + (c - a) * (s - b)) / det
-            let intersect = (0 < lambda && lambda < 1) && (0 < gamma && gamma < 1)
+            let intersect = (0 <= lambda && lambda <= 1) && (0 <= gamma && gamma <= 1)
             if(!intersect) return false
             else {
                 const intersectPoint = addVec(line1[0], smultVec(subVec(line1[1], line1[0]), lambda))
@@ -185,6 +185,14 @@ class Rectangle extends Shape {
         CTX.closePath()
         CTX.fill()
         CTX.stroke()
+    }
+
+    pointInside = (point) => {
+        if(
+            this.x <= point[0] && point[0] <= this.x+this.w &&
+            this.y <= point[1] && point[1] <= this.y+this.h
+        ) return true
+        else return false
     }
 
 }
