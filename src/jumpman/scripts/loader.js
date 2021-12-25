@@ -1,11 +1,12 @@
 console.log("LOAD SCRIPT: loader.js")
 
 const parseAmount = (amount, grid) => {
+    if(typeof(amount) === "number") return amount
     const isGrid = amount.indexOf("grid")
     if(isGrid != -1) {
-        return parseInt(amount.slice(0, isGrid)) * grid
+        return parseFloat(amount.slice(0, isGrid)) * grid
     }
-    else return parseInt(amount)
+    else return parseFloat(amount)
 }
 
 const parseObject = (jsonObject) => {
@@ -40,7 +41,7 @@ const loadJsonMap = (jsonObject) => {
 
     // SET SCENES
     const rawScenes = jsonObject["scenes"]
-    rawScenes.map(rawScene => {
+    Object.values(rawScenes).map(rawScene => {
         const sceneName = rawScene["name"]
         const sceneCol = rawScene["col"]
         const sceneRow = rawScene["row"]

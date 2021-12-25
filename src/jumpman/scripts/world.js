@@ -33,7 +33,7 @@ class World {
     latestUpdate = 0
     update = () => {
         const now = new Date()
-        console.log("time spent: ", now - this.latestUpdate)
+        // console.log("time spent: ", now - this.latestUpdate)
         this.nowScene.update()
         this.latestUpdate = now
     }

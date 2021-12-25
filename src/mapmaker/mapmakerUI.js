@@ -1,16 +1,17 @@
-const dragElement = () => {
-    const floatingWindow = document.getElementById("floating_window")
-    let pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-    if (document.getElementById("move_bar")) {
+function dragElement(panelID) {
+    const panel = document.getElementById(panelID)
+    const dragBar = panel.getElementsByClassName("move_bar")
+    var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+    if (dragBar.length > 0) {
         // if present, the header is where you move the DIV from:
-        document.getElementById("move_bar").onmousedown = dragMouseDown;
+        dragBar[0].onmousedown = dragMouseDown;
     } else {
         // otherwise, move the DIV from anywhere inside the DIV:
-        floatingWindow.onmousedown = dragMouseDown;
+        panel.onmousedown = dragMouseDown;
     }
 
     function dragMouseDown(e) {
-        e = e || floatingWindow.event;
+        e = e || window.event;
         e.preventDefault();
         // get the mouse cursor position at startup:
         pos3 = e.clientX;
@@ -21,7 +22,7 @@ const dragElement = () => {
     }
 
     function elementDrag(e) {
-        e = e || floatingWindow.event;
+        e = e || window.event;
         e.preventDefault();
         // calculate the new cursor position:
         pos1 = pos3 - e.clientX;
@@ -29,8 +30,8 @@ const dragElement = () => {
         pos3 = e.clientX;
         pos4 = e.clientY;
         // set the element's new position:
-        floatingWindow.style.top = Math.max((floatingWindow.offsetTop - pos2), 0) + "px";
-        floatingWindow.style.left = Math.max((floatingWindow.offsetLeft - pos1), 0) + "px";
+        panel.style.top = (panel.offsetTop - pos2) + "px";
+        panel.style.left = (panel.offsetLeft - pos1) + "px";
     }
 
     function closeDragElement() {
@@ -40,4 +41,5 @@ const dragElement = () => {
     }
 }
 
-dragElement(document.getElementById("floating_window"));
+dragElement("main_panel")
+dragElement("object_panel")
