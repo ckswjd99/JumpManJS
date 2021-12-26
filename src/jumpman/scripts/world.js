@@ -32,10 +32,8 @@ class World {
 
     latestUpdate = 0
     update = () => {
-        const now = new Date()
-        // console.log("time spent: ", now - this.latestUpdate)
+        updateCanvas()
         this.nowScene.update()
-        this.latestUpdate = now
     }
     render = () => {
         this.nowScene.render()
@@ -96,6 +94,7 @@ class Scene {
     }
 
     update = () => {
+        this.setDisplay()
         this.objLayers.forEach(layer => layer.update(1/SETTING.fps))
         this.physLayer.update(1/SETTING.fps)
         this.player.update(1/SETTING.fps)

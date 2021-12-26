@@ -6,8 +6,10 @@ const CANVAS = document.createElement("canvas")
 const CTX = CANVAS.getContext('2d')
 
 WRAPPER.appendChild(CANVAS)
-CANVAS.width = WRAPPER.clientWidth
-CANVAS.height = WRAPPER.clientHeight
+const updateCanvas = () => {
+    CANVAS.width = WRAPPER.clientWidth
+    CANVAS.height = WRAPPER.clientHeight
+}
 
 // sequential importer
 loadScriptFile(scriptsToLoad[++loadIndex])
