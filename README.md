@@ -21,18 +21,21 @@ Scripts will automatically fill the provided area with the game.
 ## Map Maker
 
 ### Demo
-Try map maker [here](https://jump-man-js.herokuapp.com/mapmaker).
+Try map maker [here](https://jump-man-js.herokuapp.com/mapmaker). / [Sample World JSON](https://github.com/ckswjd99/JumpManJS/blob/main/src/mapmaker/Sample%20World.json)
+
+### Short Video Tutorial
+[![Video Label](http://img.youtube.com/vi/a6mUvULdp7M/0.jpg)](https://youtu.be/a6mUvULdp7M?t=0s)
 
 ### How to Use
-Drag: create rectangular area.
+**Drag**: create rectangular area.
 
-Key R: make rectangular physical object.
+Key **R**: make rectangular physical object.
 
-Key Q, W, A, S: make right triangle object.
+Key **Q, W, A, S**: make right triangle object.
 
-Key D: delete selected object.
+Key **D**: delete selected object.
 
-Key F: flush every object & parameters in a scene.
+Key **F**: flush every object & parameters in a scene.
 
 ## Notice
 
